@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OhSnap Booth</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- GIF encoder library -->
+  <script src="https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.js"></script>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="logo-wrap">
+      <span class="logo-icon">⚡</span>
+      <h1 class="logo">OhSnap<span class="logo-accent">Booth</span></h1>
+    </div>
+    <p class="tagline">capture the moment. no app needed.</p>
+  </header>
+
+  <!-- STEP BAR -->
+  <nav class="steps-bar">
+    <div class="step active" id="step1-ind">
+      <div class="step-dot"><span>1</span></div>
+      <span class="step-label">Shoot</span>
+    </div>
+    <div class="step-line"></div>
+    <div class="step" id="step2-ind">
+      <div class="step-dot"><span>2</span></div>
+      <span class="step-label">Filter</span>
+    </div>
+    <div class="step-line"></div>
+    <div class="step" id="step3-ind">
+      <div class="step-dot"><span>3</span></div>
+      <span class="step-label">Frame</span>
+    </div>
+    <div class="step-line"></div>
+    <div class="step" id="step4-ind">
+      <div class="step-dot"><span>4</span></div>
+      <span class="step-label">Export</span>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main-layout">
+
+    <!-- ===== LEFT: CAMERA ===== -->
+    <section class="card camera-panel">
+      <div class="card-header">
+        <span class="card-icon">📷</span>
+        <span>Live Camera</span>
+        <span class="cam-badge" id="camBadge">● LIVE</span>
+      </div>
+
+      <div class="video-wrapper">
+        <video id="video" autoplay playsinline></video>
+        <div class="countdown-overlay" id="countdownDisplay"></div>
+        <div class="shot-counter" id="shotCounter" style="display:none"></div>
+      </div>
+
+      <!-- MODE TABS -->
+      <div class="mode-tabs">
+        <button class="mode-tab active" id="tabPhoto" data-mode="photo">📸 Photo Strip</button>
+        <button class="mode-tab" id="tabGif" data-mode="gif">🎞 GIF</button>
+      </div>
+
+      <!-- PHOTO OPTIONS -->
+      <div id="photoOptions">
+        <p class="option-label">Number of Photos</p>
+        <div class="pill-group" id="countGroup">
+          <button class="pill active" data-count="4">4 pics</button>
+          <button class="pill" data-count="6">6 pics</button>
+          <button class="pill" data-count="8">8 pics</button>
+        </div>
+      </div>
+
+      <!-- GIF OPTIONS -->
+      <div id="gifOptions" style="display:none">
+        <p class="option-label">GIF Duration</p>
+        <div class="pill-group" id="gifDurGroup">
+          <button class="pill active" data-dur="2">2 sec</button>
+          <button class="pill" data-dur="3">3 sec</button>
+          <button class="pill" data-dur="5">5 sec</button>
+        </div>
+        <p class="option-label" style="margin-top:0.8rem">Speed</p>
+        <div class="pill-group">
+          <button class="pill active" data-fps="10">Normal</button>
+          <button class="pill" data-fps="15">Fast</button>
+          <button class="pill" data-fps="6">Slow</button>
+        </div>
+      </div>
+
+      <button class="shoot-btn" id="shootBtn">
+        <span id="shootBtnLabel">📸 Start Shooting</span>
+      </button>
+
+      <div class="status-bar" id="statusMsg">camera ready — choose mode &amp; shoot!</div>
+    </section>
+
+    <!-- ===== RIGHT: RESULT ===== -->
+    <section class="card result-panel">
+
+      <!-- PANEL 1: PLACEHOLDER / RAW -->
+      <div id="panelRaw">
+        <div class="card-header"><span class="card-icon">🎞</span><span>Your Strip</span></div>
+        <div class="preview-box" id="previewBox">
+          <canvas id="stripCanvas" style="display:none"></canvas>
+          <div class="placeholder" id="stripPlaceholder">
+            <div class="placeholder-icon">⚡</div>
+            <p>Your result will appear here</p>
+            <p class="placeholder-sub">Choose mode, hit shoot!</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL 2: FILTER -->
+      <div id="panelFilter" style="display:none">
+        <div class="card-header"><span class="card-icon">🎨</span><span>Step 2 — Choose Filter</span></div>
+        <div class="filter-grid" id="filterGrid"></div>
+        <button class="action-btn" id="applyFilterBtn">Apply Filter →</button>
+      </div>
+
+      <!-- PANEL 3: FRAME -->
+      <div id="panelFrame" style="display:none">
+        <div class="card-header"><span class="card-icon">🖼</span><span>Step 3 — Choose Frame</span></div>
+        <div class="frame-grid" id="frameGrid"></div>
+        <div class="btn-row">
+          <button class="ghost-btn" id="backToFilterBtn">← Back</button>
+          <button class="action-btn" id="applyFrameBtn">Apply Frame →</button>
+        </div>
+      </div>
+
+      <!-- PANEL 4: EXPORT -->
+      <div id="panelExport" style="display:none">
+        <div class="card-header"><span class="card-icon">✅</span><span>Step 4 — Export</span></div>
+        <div class="preview-box">
+          <canvas id="finalCanvas" style="display:none"></canvas>
+          <img id="gifPreview" style="display:none; max-width:100%; max-height:460px; border-radius:8px;" alt="GIF preview"/>
+        </div>
+        <div class="export-grid">
+          <button class="exp-btn" id="downloadPngBtn">⬇ PNG</button>
+          <button class="exp-btn" id="downloadGifBtn" style="display:none">⬇ GIF</button>
+          <button class="exp-btn" id="printBtn">🖨 Print</button>
+          <button class="exp-btn" id="emailBtn">✉ Email</button>
+          <button class="exp-btn ghost" id="retakeBtn">🔄 Retake</button>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- EMAIL MODAL -->
+  <div class="modal-backdrop" id="emailModal">
+    <div class="modal">
+      <button class="modal-close" id="closeModal">✕</button>
+      <div class="modal-icon">✉</div>
+      <h3>Send to Email</h3>
+      <p class="modal-sub">We'll send your photo strip directly to your inbox.</p>
+      <input type="email" id="emailInput" placeholder="your@email.com" class="text-input"/>
+      <button class="action-btn full" id="sendEmailBtn">Send</button>
+      <p class="modal-status" id="emailStatus"></p>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    OhSnap Booth · Built with WebRTC + Canvas API · 2024
+  </footer>
+
+  <canvas id="snapCanvas" style="display:none"></canvas>
+
+  <script src="js/camera.js"></script>
+  <script src="js/snapshot.js"></script>
+  <script src="js/gif-capture.js"></script>
+  <script src="js/filter.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/frame.js"></script>
+  <script src="js/export.js"></script>
+</body>
+</html>
